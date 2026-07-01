@@ -1,1 +1,1 @@
-import './bootstrap';
+// Custom JS can be added here
