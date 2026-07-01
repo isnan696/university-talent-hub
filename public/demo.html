@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>University Talent Hub - Demo</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --green: #10b981;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --ink: #111827;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #f8fafc;
+      --panel: #ffffff;
+      --cyan: #0891b2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--soft);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand strong { display: block; font-size: 15px; }
+    .brand span { color: var(--muted); font-size: 12px; }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      padding: 11px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: #eff6ff;
+      color: var(--primary);
+    }
+
+    .nav .ico {
+      width: 22px;
+      text-align: center;
+      font-weight: 800;
+      color: inherit;
+    }
+
+    .profile-mini {
+      margin-top: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+
+    .profile-mini strong { display: block; font-size: 14px; }
+    .profile-mini span { color: var(--muted); font-size: 12px; }
+
+    .main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: 0;
+    }
+
+    .title-block p {
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 13px;
+      border-radius: 8px;
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: .15s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15, 23, 42, .08); }
+    .btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn.green { background: var(--green); color: #fff; border-color: var(--green); }
+    .btn.small { min-height: 34px; padding: 7px 10px; font-size: 13px; }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .stats {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .two-col {
+      grid-template-columns: minmax(0, 1.55fr) minmax(320px, .8fr);
+      align-items: start;
+    }
+
+    .panel,
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, .05);
+    }
+
+    .panel { padding: 18px; }
+    .card { padding: 16px; }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .stat p,
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 3px;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    .blue { background: #dbeafe; color: var(--primary); }
+    .mint { background: #d1fae5; color: #047857; }
+    .amber { background: #fef3c7; color: #b45309; }
+    .rose { background: #fee2e2; color: #b91c1c; }
+    .cyan { background: #cffafe; color: var(--cyan); }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2,
+    .section-head h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .student-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .avatar {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .student-card h2 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .student-card p { margin: 3px 0 9px; color: var(--muted); }
+
+    .progress {
+      width: min(360px, 100%);
+      height: 9px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      width: 86%;
+      background: var(--primary);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .approved { background: #dcfce7; color: #166534; }
+    .pending { background: #fef3c7; color: #92400e; }
+    .rejected { background: #fee2e2; color: #991b1b; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+      min-height: 38px;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      background: #fff;
+    }
+
+    .item h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .item p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .item-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .leader-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .leader-row:last-child { border-bottom: 0; }
+
+    .rank {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .rank.top { background: #fef3c7; color: #b45309; }
+
+    .recommendation {
+      border-left: 4px solid var(--primary);
+      background: #f8fafc;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      background: #f8fafc;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 11px;
+      background: #fff;
+      color: var(--ink);
+      min-height: 42px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 8px;
+      box-shadow: 0 18px 38px rgba(15, 23, 42, .2);
+      opacity: 0;
+      transform: translateY(16px);
+      pointer-events: none;
+      transition: .2s ease;
+      z-index: 20;
+      max-width: min(360px, calc(100vw - 32px));
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .view { display: none; }
+    .view.active { display: grid; gap: 16px; }
+
+    @media (max-width: 1040px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .profile-mini { display: none; }
+      .stats, .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      .main { padding: 16px; }
+      .topbar, .student-card, .item { grid-template-columns: 1fr; align-items: start; }
+      .topbar { display: grid; }
+      .actions, .item-meta { justify-content: start; }
+      .stats, .two-col, .form-grid { grid-template-columns: 1fr; }
+      .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sidebar { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">UTH</div>
+        <div>
+          <strong>University Talent Hub</strong>
+          <span>Gamifikasi talenta mahasiswa</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navigasi utama">
+        <button class="active" data-view-target="dashboard"><span class="ico">D</span>Dashboard</button>
+        <button data-view-target="talent"><span class="ico">S</span>Skill & Sertifikat</button>
+        <button data-view-target="admin"><span class="ico">A</span>Admin</button>
+        <button data-view-target="rewards"><span class="ico">R</span>Reward</button>
+        <button data-view-target="opportunities"><span class="ico">O</span>Opportunity</button>
+        <button data-view-target="about"><span class="ico">I</span>Ringkasan</button>
+      </nav>
+
+      <div class="profile-mini">
+        <strong>Demo Login</strong>
+        <span>student@talenthub.test</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="title-block">
+          <h1 id="pageTitle">Dashboard Mahasiswa</h1>
+          <p id="pageSubtitle">Pantau profil, poin, verifikasi, reward, dan rekomendasi otomatis.</p>
+        </div>
+        <div class="actions">
+          <button class="btn" id="roleToggle">Mode: Mahasiswa</button>
+          <button class="btn primary" id="generateRecommendation">Generate Rekomendasi</button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboard" data-title="Dashboard Mahasiswa" data-subtitle="Pantau profil, poin, verifikasi, reward, dan rekomendasi otomatis.">
+        <div class="grid stats">
+          <article class="panel stat">
+            <div><p>Total Skill</p><strong id="skillCount">6</strong></div>
+            <div class="stat-icon blue">SK</div>
+          </article>
+          <article class="panel stat">
+            <div><p>Sertifikat</p><strong id="certCount">4</strong></div>
+            <div class="stat-icon mint">CR</div>
+          </article>
+          <article class="panel stat">
+            <div><p>Portfolio</p><strong>3</strong></div>
+            <div class="stat-icon amber">PF</div>
+          </article>
+          <article class="panel stat">
+            <div><p>Total Poin</p><strong id="pointTotal">1280</strong></div>
+            <div class="stat-icon rose">PT</div>
+          </article>
+        </div>
+
+        <div class="grid two-col">
+          <div class="grid">
+            <section class="panel student-card">
+              <div class="avatar">IN</div>
+              <div>
+                <h2>Isnan Nur Fadilah</h2>
+                <p>Teknik Informatika - Semester 6 - NIM 22104001</p>
+                <div class="progress" aria-label="Kelengkapan profil 86 persen"><span></span></div>
+              </div>
+              <span class="badge approved">86% lengkap</span>
+            </section>
+
+            <section class="panel">
+              <div class="section-head">
+                <h2>Rekomendasi AI</h2>
+                <span class="section-note">Rule-based engine</span>
+              </div>
+              <div class="list" id="recommendationList">
+                <article class="item recommendation">
+                  <div>
+                    <h3>Lengkapi sertifikasi cloud</h3>
+                    <p>Skill backend kamu kuat. Tambahkan sertifikat cloud untuk menaikkan readiness magang.</p>
+                  </div>
+                  <span class="badge pending">Prioritas tinggi</span>
+                </article>
+                <article class="item recommendation">
+                  <div>
+                    <h3>Submit portfolio capstone</h3>
+                    <p>Portfolio yang sudah diunggah belum semuanya dikirim untuk verifikasi admin.</p>
+                  </div>
+                  <span class="badge approved">+120 poin</span>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <aside class="grid">
+            <section class="panel">
+              <div class="section-head">
+                <h2>Peringkat</h2>
+                <span class="badge approved">#2 Kampus</span>
+              </div>
+              <div class="leader-row">
+                <div class="rank top">1</div>
+                <div><strong>Alya Putri</strong><p class="section-note">Data Science</p></div>
+                <strong>1390</strong>
+              </div>
+              <div class="leader-row">
+                <div class="rank top">2</div>
+                <div><strong>Isnan Nur Fadilah</strong><p class="section-note">Backend Developer</p></div>
+                <strong id="sidePoints">1280</strong>
+              </div>
+              <div class="leader-row">
+                <div class="rank">3</div>
+                <div><strong>Rafi Maulana</strong><p class="section-note">UI Engineer</p></div>
+                <strong>1170</strong>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="section-head">
+                <h2>Aktivitas Terbaru</h2>
+              </div>
+              <div class="list">
+                <div class="item"><div><h3>Skill Laravel disetujui</h3><p>Admin memberi +100 poin</p></div><span class="badge approved">Approved</span></div>
+                <div class="item"><div><h3>Klaim reward diproses</h3><p>Voucher kelas online</p></div><span class="badge pending">Pending</span></div>
+                <div class="item"><div><h3>Portfolio baru</h3><p>Aplikasi dashboard kampus</p></div><span class="badge pending">Review</span></div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="talent" data-title="Skill & Sertifikat" data-subtitle="Tambah data talenta, kirim verifikasi, dan pantau statusnya.">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Tambah Skill Demo</h2>
+            <span class="section-note">Data tersimpan di halaman ini selama browser terbuka.</span>
+          </div>
+          <form class="form-grid" id="skillForm">
+            <label>Nama skill
+              <input id="skillName" required placeholder="Contoh: React, Laravel, UI Design">
+            </label>
+            <label>Level
+              <select id="skillLevel">
+                <option>Beginner</option>
+                <option selected>Intermediate</option>
+                <option>Advanced</option>
+              </select>
+            </label>
+            <button class="btn primary" type="submit">Tambah Skill</button>
+            <button class="btn" type="button" id="submitAll">Submit Semua Pending</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="tabs">
+            <button class="tab active" data-filter="all">Semua</button>
+            <button class="tab" data-filter="approved">Approved</button>
+            <button class="tab" data-filter="pending">Pending</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nama</th><th>Tipe</th><th>Level</th><th>Status</th><th>Poin</th></tr></thead>
+              <tbody id="talentTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="admin" data-title="Panel Admin" data-subtitle="Validasi data mahasiswa, kelola poin, reward, dan opportunity.">
+        <div class="grid stats">
+          <article class="panel stat"><div><p>Mahasiswa</p><strong>124</strong></div><div class="stat-icon blue">M</div></article>
+          <article class="panel stat"><div><p>Menunggu Verifikasi</p><strong id="pendingTotal">8</strong></div><div class="stat-icon amber">V</div></article>
+          <article class="panel stat"><div><p>Reward Aktif</p><strong>12</strong></div><div class="stat-icon mint">R</div></article>
+          <article class="panel stat"><div><p>Opportunity</p><strong>9</strong></div><div class="stat-icon cyan">O</div></article>
+        </div>
+
+        <section class="panel">
+          <div class="section-head">
+            <h2>Antrian Verifikasi</h2>
+            <button class="btn green small" id="approveFirst">Approve Teratas</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Mahasiswa</th><th>Item</th><th>Kategori</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody id="verificationTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="rewards" data-title="Reward & Gamifikasi" data-subtitle="Mahasiswa menukar poin dengan reward yang disediakan kampus.">
+        <div class="grid stats">
+          <article class="panel stat"><div><p>Poin Tersedia</p><strong id="rewardPoints">1280</strong></div><div class="stat-icon blue">PT</div></article>
+          <article class="panel stat"><div><p>Reward Diklaim</p><strong id="claimedCount">1</strong></div><div class="stat-icon mint">CL</div></article>
+          <article class="panel stat"><div><p>Stok Tersedia</p><strong id="stockTotal">24</strong></div><div class="stat-icon amber">ST</div></article>
+          <article class="panel stat"><div><p>Level</p><strong>Gold</strong></div><div class="stat-icon rose">LV</div></article>
+        </div>
+        <div class="grid two-col" id="rewardList"></div>
+      </section>
+
+      <section class="view" id="opportunities" data-title="Opportunity Board" data-subtitle="Peluang magang, lomba, dan program kampus yang cocok dengan profil mahasiswa.">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Rekomendasi Opportunity</h2>
+            <span class="section-note">Dicocokkan dari skill dan portfolio.</span>
+          </div>
+          <div class="list">
+            <article class="item">
+              <div><h3>Backend Internship - EduTech Nusantara</h3><p>Laravel, REST API, PostgreSQL - Deadline 18 Juli 2026</p></div>
+              <span class="badge approved">Match 92%</span>
+            </article>
+            <article class="item">
+              <div><h3>Kompetisi Inovasi Kampus Digital</h3><p>Portfolio dashboard, UI/UX, data analytics - Deadline 25 Juli 2026</p></div>
+              <span class="badge pending">Match 84%</span>
+            </article>
+            <article class="item">
+              <div><h3>Cloud Fundamental Bootcamp</h3><p>Program persiapan sertifikasi cloud dasar selama 4 minggu</p></div>
+              <span class="badge approved">Disarankan AI</span>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="about" data-title="Ringkasan MVP" data-subtitle="Demo ini merangkum hasil project agar bisa dipresentasikan tanpa setup backend penuh.">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Fitur yang Ditampilkan</h2>
+          </div>
+          <div class="grid stats">
+            <article class="card"><h3>Student Dashboard</h3><p class="section-note">Statistik profil, poin, ranking, aktivitas, dan rekomendasi.</p></article>
+            <article class="card"><h3>Talent Management</h3><p class="section-note">Data skill dan sertifikat dengan status verifikasi.</p></article>
+            <article class="card"><h3>Admin Verification</h3><p class="section-note">Simulasi approve data dan pemberian poin.</p></article>
+            <article class="card"><h3>Reward System</h3><p class="section-note">Klaim reward berdasarkan saldo poin mahasiswa.</p></article>
+          </div>
+        </section>
+        <section class="panel">
+          <h2 style="margin-top:0">Catatan Lanjutan</h2>
+          <p class="section-note">Project Laravel aslinya tetap ada. Untuk menjalankan versi backend penuh dibutuhkan Composer, vendor Laravel, file .env, database, migrasi, dan seeder.</p>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const state = {
+      role: "Mahasiswa",
+      points: 1280,
+      claimed: 1,
+      currentFilter: "all",
+      talents: [
+        { name: "Laravel REST API", type: "Skill", level: "Advanced", status: "approved", points: 100 },
+        { name: "PostgreSQL Database", type: "Skill", level: "Intermediate", status: "approved", points: 90 },
+        { name: "Bootstrap Dashboard", type: "Portfolio", level: "Intermediate", status: "pending", points: 0 },
+        { name: "Dicoding Backend Pemula", type: "Sertifikat", level: "Intermediate", status: "approved", points: 120 },
+        { name: "Cloud Fundamental", type: "Sertifikat", level: "Beginner", status: "pending", points: 0 },
+        { name: "UI/UX Wireframing", type: "Skill", level: "Intermediate", status: "pending", points: 0 }
+      ],
+      verifications: [
+        { student: "Isnan Nur Fadilah", item: "Cloud Fundamental", category: "Sertifikat", status: "pending" },
+        { student: "Maya Lestari", item: "Data Visualization", category: "Portfolio", status: "pending" },
+        { student: "Rafi Maulana", item: "React Component Library", category: "Skill", status: "pending" },
+        { student: "Alya Putri", item: "Machine Learning Dasar", category: "Sertifikat", status: "pending" }
+      ],
+      rewards: [
+        { title: "Voucher Kelas Online", cost: 500, stock: 8, desc: "Akses kelas premium untuk meningkatkan skill teknis." },
+        { title: "Mentoring Karier", cost: 700, stock: 5, desc: "Sesi mentoring 1-on-1 bersama alumni industri." },
+        { title: "Sertifikasi Kampus", cost: 900, stock: 4, desc: "Subsidi biaya sertifikasi kompetensi mahasiswa." },
+        { title: "Merchandise Eksklusif", cost: 250, stock: 7, desc: "Paket merchandise untuk mahasiswa aktif." }
+      ]
+    };
+
+    const toast = document.querySelector("#toast");
+    const pageTitle = document.querySelector("#pageTitle");
+    const pageSubtitle = document.querySelector("#pageSubtitle");
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    function statusBadge(status) {
+      const labels = { approved: "Approved", pending: "Pending", rejected: "Rejected" };
+      return `<span class="badge ${status}">${labels[status] || status}</span>`;
+    }
+
+    function syncCounters() {
+      const approvedPoints = state.talents.reduce((sum, item) => sum + (item.status === "approved" ? item.points : 0), 0);
+      document.querySelector("#skillCount").textContent = state.talents.filter(item => item.type === "Skill").length;
+      document.querySelector("#certCount").textContent = state.talents.filter(item => item.type === "Sertifikat").length;
+      document.querySelector("#pointTotal").textContent = state.points;
+      document.querySelector("#sidePoints").textContent = state.points;
+      document.querySelector("#rewardPoints").textContent = state.points;
+      document.querySelector("#claimedCount").textContent = state.claimed;
+      document.querySelector("#pendingTotal").textContent = state.verifications.filter(item => item.status === "pending").length + state.talents.filter(item => item.status === "pending").length;
+      document.querySelector("#stockTotal").textContent = state.rewards.reduce((sum, reward) => sum + reward.stock, 0);
+      return approvedPoints;
+    }
+
+    function renderTalents() {
+      const rows = state.talents
+        .filter(item => state.currentFilter === "all" || item.status === state.currentFilter)
+        .map(item => `
+          <tr>
+            <td><strong>${item.name}</strong></td>
+            <td>${item.type}</td>
+            <td>${item.level}</td>
+            <td>${statusBadge(item.status)}</td>
+            <td>${item.points}</td>
+          </tr>
+        `).join("");
+      document.querySelector("#talentTable").innerHTML = rows || `<tr><td colspan="5">Tidak ada data untuk filter ini.</td></tr>`;
+      syncCounters();
+    }
+
+    function renderVerifications() {
+      document.querySelector("#verificationTable").innerHTML = state.verifications.map((item, index) => `
+        <tr>
+          <td><strong>${item.student}</strong></td>
+          <td>${item.item}</td>
+          <td>${item.category}</td>
+          <td>${statusBadge(item.status)}</td>
+          <td><button class="btn small green" data-approve="${index}" ${item.status !== "pending" ? "disabled" : ""}>Approve</button></td>
+        </tr>
+      `).join("");
+      syncCounters();
+    }
+
+    function renderRewards() {
+      document.querySelector("#rewardList").innerHTML = state.rewards.map((reward, index) => `
+        <article class="panel">
+          <div class="section-head">
+            <h2>${reward.title}</h2>
+            <span class="badge ${reward.stock > 0 ? "approved" : "rejected"}">Stok ${reward.stock}</span>
+          </div>
+          <p class="section-note">${reward.desc}</p>
+          <div style="height:14px"></div>
+          <div class="section-head" style="margin-bottom:0">
+            <strong>${reward.cost} poin</strong>
+            <button class="btn primary small" data-claim="${index}" ${state.points < reward.cost || reward.stock < 1 ? "disabled" : ""}>Klaim</button>
+          </div>
+        </article>
+      `).join("");
+      syncCounters();
+    }
+
+    function approveVerification(index) {
+      const item = state.verifications[index];
+      if (!item || item.status !== "pending") return;
+      item.status = "approved";
+      state.points += 100;
+      renderVerifications();
+      renderRewards();
+      showToast(`${item.item} disetujui. Poin mahasiswa bertambah 100.`);
+    }
+
+    document.querySelectorAll("[data-view-target]").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-view-target]").forEach(item => item.classList.remove("active"));
+        document.querySelectorAll(".view").forEach(view => view.classList.remove("active"));
+        button.classList.add("active");
+        const target = document.querySelector(`#${button.dataset.viewTarget}`);
+        target.classList.add("active");
+        pageTitle.textContent = target.dataset.title;
+        pageSubtitle.textContent = target.dataset.subtitle;
+      });
+    });
+
+    document.querySelector("#roleToggle").addEventListener("click", event => {
+      state.role = state.role === "Mahasiswa" ? "Admin" : "Mahasiswa";
+      event.currentTarget.textContent = `Mode: ${state.role}`;
+      showToast(`Mode tampilan diganti ke ${state.role}.`);
+    });
+
+    document.querySelector("#generateRecommendation").addEventListener("click", () => {
+      const ideas = [
+        ["Bangun portfolio API publik", "Tambahkan dokumentasi endpoint dan contoh response agar portfolio lebih siap dilihat recruiter."],
+        ["Ikuti bootcamp cloud", "Profil kamu cocok untuk peluang backend internship yang mensyaratkan deployment dasar."],
+        ["Perkuat bukti skill UI", "Tambahkan screenshot dan link demo untuk portfolio Bootstrap Dashboard."]
+      ];
+      const pick = ideas[Math.floor(Math.random() * ideas.length)];
+      document.querySelector("#recommendationList").insertAdjacentHTML("afterbegin", `
+        <article class="item recommendation">
+          <div><h3>${pick[0]}</h3><p>${pick[1]}</p></div>
+          <span class="badge pending">Baru</span>
+        </article>
+      `);
+      showToast("Rekomendasi baru berhasil dibuat.");
+    });
+
+    document.querySelector("#skillForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const name = document.querySelector("#skillName").value.trim();
+      const level = document.querySelector("#skillLevel").value;
+      if (!name) return;
+      state.talents.unshift({ name, type: "Skill", level, status: "pending", points: 0 });
+      event.currentTarget.reset();
+      renderTalents();
+      showToast(`${name} ditambahkan dan menunggu verifikasi.`);
+    });
+
+    document.querySelector("#submitAll").addEventListener("click", () => {
+      const pending = state.talents.filter(item => item.status === "pending").length;
+      showToast(pending ? `${pending} data pending sudah masuk antrian admin.` : "Tidak ada data pending.");
+    });
+
+    document.querySelectorAll("[data-filter]").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-filter]").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        state.currentFilter = button.dataset.filter;
+        renderTalents();
+      });
+    });
+
+    document.querySelector("#verificationTable").addEventListener("click", event => {
+      const button = event.target.closest("[data-approve]");
+      if (button) approveVerification(Number(button.dataset.approve));
+    });
+
+    document.querySelector("#approveFirst").addEventListener("click", () => {
+      const index = state.verifications.findIndex(item => item.status === "pending");
+      if (index >= 0) approveVerification(index);
+      else showToast("Semua data verifikasi sudah selesai.");
+    });
+
+    document.querySelector("#rewardList").addEventListener("click", event => {
+      const button = event.target.closest("[data-claim]");
+      if (!button) return;
+      const reward = state.rewards[Number(button.dataset.claim)];
+      if (!reward || reward.stock < 1 || state.points < reward.cost) return;
+      reward.stock -= 1;
+      state.points -= reward.cost;
+      state.claimed += 1;
+      renderRewards();
+      syncCounters();
+      showToast(`${reward.title} berhasil diklaim.`);
+    });
+
+    renderTalents();
+    renderVerifications();
+    renderRewards();
+    syncCounters();
+  </script>
+</body>
+</html>

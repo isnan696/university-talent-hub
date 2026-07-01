@@ -84,9 +84,20 @@ class SkillController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
+        $wasApproved = $skill->verification_status === 'approved';
+
         $this->skillRepository->update($id, $data);
 
-        return redirect()->route('student.skills.index')->with('success', 'Skill berhasil diperbarui.');
+        // If skill was approved and got edited, reset to draft for re-verification
+        if ($wasApproved) {
+            $skill->update(['verification_status' => 'draft']);
+        }
+
+        $message = $wasApproved
+            ? 'Skill berhasil diperbarui. Status direset ke draft — silakan ajukan verifikasi ulang.'
+            : 'Skill berhasil diperbarui.';
+
+        return redirect()->route('student.skills.index')->with('success', $message);
     }
 
     public function destroy(string $id)

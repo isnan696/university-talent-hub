@@ -88,9 +88,20 @@ class CertificateController extends Controller
             'credential_url' => 'nullable|url|max:255',
         ]);
 
+        $wasApproved = $certificate->verification_status === 'approved';
+
         $this->certificateRepository->update($id, $data);
 
-        return redirect()->route('student.certificates.index')->with('success', 'Sertifikat berhasil diperbarui.');
+        // If certificate was approved and got edited, reset to draft for re-verification
+        if ($wasApproved) {
+            $certificate->update(['verification_status' => 'draft']);
+        }
+
+        $message = $wasApproved
+            ? 'Sertifikat berhasil diperbarui. Status direset ke draft — silakan ajukan verifikasi ulang.'
+            : 'Sertifikat berhasil diperbarui.';
+
+        return redirect()->route('student.certificates.index')->with('success', $message);
     }
 
     public function destroy(string $id)

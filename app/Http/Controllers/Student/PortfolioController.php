@@ -96,9 +96,20 @@ class PortfolioController extends Controller
             $data['thumbnail'] = $request->file('thumbnail')->store('portfolios', 'public');
         }
 
+        $wasApproved = $portfolio->verification_status === 'approved';
+
         $this->portfolioRepository->update($id, $data);
 
-        return redirect()->route('student.portfolios.index')->with('success', 'Portfolio berhasil diperbarui.');
+        // If portfolio was approved and got edited, reset to draft for re-verification
+        if ($wasApproved) {
+            $portfolio->update(['verification_status' => 'draft']);
+        }
+
+        $message = $wasApproved
+            ? 'Portfolio berhasil diperbarui. Status direset ke draft — silakan ajukan verifikasi ulang.'
+            : 'Portfolio berhasil diperbarui.';
+
+        return redirect()->route('student.portfolios.index')->with('success', $message);
     }
 
     public function destroy(string $id)

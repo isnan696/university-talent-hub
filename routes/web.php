@@ -58,8 +58,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/students', [StudentManagementController::class, 'index'])->name('students.index');
-    Route::get('/students/{id}', [StudentManagementController::class, 'show'])->name('students.show');
     Route::get('/students/search', [StudentManagementController::class, 'search'])->name('students.search');
+    Route::get('/students/{id}', [StudentManagementController::class, 'show'])->name('students.show');
 
     Route::get('/verifications', [VerificationController::class, 'index'])->name('verifications.index');
     Route::get('/verifications/{id}', [VerificationController::class, 'show'])->name('verifications.show');

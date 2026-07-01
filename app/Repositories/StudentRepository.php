@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Point;
 use App\Models\StudentProfile;
 use App\Models\User;
 use App\Repositories\Interfaces\StudentRepositoryInterface;
@@ -25,17 +26,17 @@ class StudentRepository implements StudentRepositoryInterface
 
         if (!empty($filters['name'])) {
             $query->whereHas('user', function ($q) use ($filters) {
-                $q->where('name', 'ilike', "%{$filters['name']}%");
+                $q->where('name', 'like', "%{$filters['name']}%");
             });
         }
 
         if (!empty($filters['program_studi'])) {
-            $query->where('program_studi', 'ilike', "%{$filters['program_studi']}%");
+            $query->where('program_studi', 'like', "%{$filters['program_studi']}%");
         }
 
         if (!empty($filters['skill'])) {
             $query->whereHas('skills', function ($q) use ($filters) {
-                $q->where('skill_name', 'ilike', "%{$filters['skill']}%")
+                $q->where('skill_name', 'like', "%{$filters['skill']}%")
                   ->where('verification_status', 'approved');
             });
         }
@@ -52,11 +53,9 @@ class StudentRepository implements StudentRepositoryInterface
     public function getAllWithPoints()
     {
         return StudentProfile::with('user', 'point')
-            ->whereHas('point')
-            ->orderByDesc(
-                Point::select('total_points')
-                    ->whereColumn('student_profile_id', 'student_profiles.id')
-            )
+            ->leftJoin('points', 'student_profiles.id', '=', 'points.student_profile_id')
+            ->orderByDesc('points.total_points')
+            ->select('student_profiles.*')
             ->paginate(20);
     }
 
